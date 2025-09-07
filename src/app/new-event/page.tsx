@@ -16,11 +16,27 @@ export default function CreateEvent(){
 
   const [errors, setErrors] = useState<Partial<CreateEventData>>({})
 
-  // const validateForm = (): boolean => {
-  //   const newErrors: Partial<CreateEventData> = {}
+  const validateForm = (): boolean => {
+    const newErrors: Partial<CreateEventData> = {}
 
+    if(!formData.date){
+      newErrors.date = "Date is required"
+    } else {
+      const selectedDate = new Date(formData.date)
+      const now = new Date();
+      if( selectedDate <= now) {
+        newErrors.date= 'Date must be in the future'
+      }
+    }
 
-  // }
+    if(!formData.location.trim()){
+      newErrors.location = 'location is required'
+    }
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length ===0
+
+  }
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
