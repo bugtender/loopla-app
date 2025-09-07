@@ -41,6 +41,7 @@ export async function POST(request: Request) {
 
     const { title, date, description, location } = body
 
+    console.log(body)
     if( !title || !date || !location){
       return NextResponse.json(
         {error: 'Title, date and location are required'},
@@ -48,23 +49,24 @@ export async function POST(request: Request) {
       )
     }
 
-    // const emojiRegex = ''
-    // if (!emojiReget.test(title)){
-    //   return NextResponse.json(
-    //     {error: 'Title must contain at least an emoji at the end'},
-    //     {status: 400 }
-    //   )
-    // }
+    const emojiRegex = /\p{Extended_Pictographic}(?:\u200D\p{Extended_Pictographic})*/gu;
+    if (!emojiRegex.test(title)){
+      return NextResponse.json(
+        {error: 'Title must contain at least an emoji at the end'},
+        {status: 400 }
+      )
+    }
 
     const events = readEventsFromFile();
     const newEvent: Event = {
-      id: Date.now.toString(),
+      id: Date.now().toString(),
       title: title,
       description: description || '',
       date: new Date(date).toISOString(),
       location: location.toUpperCase()
     }
 
+    console.log(newEvent)
     events.push(newEvent);
     writeEventToFile(events)
 
