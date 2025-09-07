@@ -16,7 +16,10 @@ export default function Home() {
   useEffect(() =>{
     //  quick filter by lowercase
     const filtered = events.filter((event) => event.title.toLowerCase().includes(searchTerm.toLowerCase()))
-
+    //  events sorted by length of title, shortest first
+    filtered.sort((a, b) => {
+      return a.title.length - b.title.length
+    })
     setFilteredEvents(filtered)
   },[events, searchTerm])
 
@@ -58,7 +61,7 @@ export default function Home() {
             </p>
           ):(
             filteredEvents.map((event) => (
-              <div>
+              <div key={event.id}>
                 <h2>{event.title}</h2>
                 <p>{event.date}</p>
                 <p>{event.location}</p>
