@@ -3,7 +3,23 @@
 import { useEffect, useState } from "react";
 import { Event } from "@/types/events"
 import Link from "next/link";
-import { Container, TextField, Typography, Card, CardContent, Box, Button, CardActionArea, CircularProgress, Alert } from "@mui/material";
+import {
+  Container,
+  TextField,
+  Typography,
+  Card,
+  CardContent,
+  Box,
+  Button,
+  CardActionArea,
+  CircularProgress,
+  Alert,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
+  Grid
+} from "@mui/material";
 import dayjs from "dayjs";
 
 export default function Home() {
@@ -12,6 +28,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [sortBy, setSortBy] = useState('title');
 
   useEffect(()=> {
     fetchEvents()
@@ -32,10 +49,15 @@ export default function Home() {
     const filtered = events.filter((event) => event.title.toLowerCase().includes(searchTerm.toLowerCase()))
     //  events sorted by length of title, shortest first
     filtered.sort((a, b) => {
-      return a.title.length - b.title.length
+      if(sortBy === 'title'){
+        return a.title.length - b.title.length
+      } else {
+        return new Date(a.date).getTime() - new Date(b.date).getTime()
+      }
     })
+  
     setFilteredEvents(filtered)
-  },[events, searchTerm])
+  },[events, searchTerm, sortBy])
 
   const fetchEvents = async () => {
     try{
@@ -81,7 +103,6 @@ export default function Home() {
             Upcoming Event
           </Typography>
 
-
           <Link href="/new-event">
             <Button
               variant="contained"
@@ -92,14 +113,32 @@ export default function Home() {
             </Button>
           </Link>
 
+          <Grid container spacing={2} sx={{ width: "100%" }}>
+            <Grid size={8} >
+              <TextField
+                fullWidth
+                label="Search event by title..."
+                variant="outlined"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </Grid>
 
-          <TextField
-            fullWidth
-            label="Search event by title..."
-            variant="outlined"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+            <Grid size={4}>
+              <FormControl fullWidth>
+                <InputLabel id="sort-by-label">Sort By</InputLabel>
+                <Select
+                  labelId="sort-by-label"
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value as "title" | "date")}
+                  label="Sort By"
+                >
+                  <MenuItem value="title">Title</MenuItem>
+                  <MenuItem value="date">Date</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+          </Grid>
 
           { successMessage && <Alert severity="success">{successMessage}</Alert> }
 
