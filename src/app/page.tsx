@@ -1,7 +1,10 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { Event } from "./types/events";
+import { Event } from "@/types/events"
+import Link from "next/link";
+import { Container, TextField, Typography, Card, CardContent, Box, Button, CardActionArea, CircularProgress } from "@mui/material";
+import dayjs from "dayjs";
 
 export default function Home() {
   const [events, setEvents] = useState<Event[]>([])
@@ -39,39 +42,77 @@ export default function Home() {
 
   if(loading){
     return (
-      <div>Loading events....</div>
-    )
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "100vh",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
   }
 
   return (
-    <div >
-      <main >
-        <div>
-          <input
-            type="text"
-            placeholder="Search event by title..."
+    <Box sx={{ bgcolor: "grey.50", py: 6, minHeight: "100vh" }}>
+      <Container maxWidth="sm">
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 2,
+          }}
+        >
+          <Typography variant="h4" component="h1" gutterBottom align="center">
+            Upcoming Event
+          </Typography>
+
+
+          <Link href="/new-event">
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{ mb: 3 }}
+            >
+              Create New Event
+            </Button>
+          </Link>
+
+
+          <TextField
+            fullWidth
+            label="Search event by title..."
+            variant="outlined"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            />
-        </div>
-        <div>
+          />
+
           {filteredEvents.length === 0 ? (
-            <p>
-              {searchTerm ? 'No events foud match your search' : 'No events'} 
-            </p>
-          ):(
+            <Typography variant="body1" color="text.secondary">
+              {searchTerm ? "No events found matching your search" : "No events"}
+            </Typography>
+          ) : (
             filteredEvents.map((event) => (
-              <div key={event.id}>
-                <h2>{event.title}</h2>
-                <p>{event.date}</p>
-                <p>{event.location}</p>
-              </div>
-            )))
-          } 
-        </div>
-      </main>
-      <footer>
-      </footer>
-    </div>
+             <Card sx={{ width: "100%" }} key={event.id}>
+              <CardActionArea component={Link} href={`/event/${event.id}`}>
+                <CardContent>
+                  <Typography variant="h6">{event.title}</Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {dayjs(event.date).format("YYYY-MM-DD HH:mm")}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {event.location}
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+            ))
+          )}
+        </Box>
+      </Container>
+    </Box>
   );
 }

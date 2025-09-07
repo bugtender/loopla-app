@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import fs from 'fs';
 import path from 'path';
-import { CreateEventData, Event } from "@/app/types/events";
+import { CreateEventData, Event } from "@/types/events"
 
 const eventFilePath = path.join(process.cwd(), 'data', 'events.json')
 
@@ -41,7 +41,6 @@ export async function POST(request: Request) {
 
     const { title, date, description, location } = body
 
-    console.log(body)
     if( !title || !date || !location){
       return NextResponse.json(
         {error: 'Title, date and location are required'},
@@ -66,7 +65,6 @@ export async function POST(request: Request) {
       location: location.toUpperCase()
     }
 
-    console.log(newEvent)
     events.push(newEvent);
     writeEventToFile(events)
 
