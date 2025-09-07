@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Event } from "@/types/events"
 import Link from "next/link";
-import { Container, TextField, Typography, Card, CardContent, Box, Button, CardActionArea, CircularProgress } from "@mui/material";
+import { Container, TextField, Typography, Card, CardContent, Box, Button, CardActionArea, CircularProgress, Alert } from "@mui/material";
 import dayjs from "dayjs";
 
 export default function Home() {
@@ -11,10 +11,21 @@ export default function Home() {
   const [filteredEvents , setFilteredEvents] = useState<Event[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(()=> {
     fetchEvents()
   }, [])
+
+  useEffect(()=>{
+    const urlParams = new URLSearchParams(window.location.search);
+    const success = urlParams.get('eventCreateSuccess');
+    if(success==='true'){
+      setSuccessMessage('Event created successfully! 🎉');
+      setTimeout(()=> setSuccessMessage(''), 3000);
+      window.history.replaceState({}, '', '/')
+    }
+  })
 
   useEffect(() =>{
     //  quick filter by lowercase
@@ -89,6 +100,8 @@ export default function Home() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
+
+          { successMessage && <Alert severity="success">{successMessage}</Alert> }
 
           {filteredEvents.length === 0 ? (
             <Typography variant="body1" color="text.secondary">

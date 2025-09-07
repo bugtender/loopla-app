@@ -69,7 +69,7 @@ export default function CreateEvent() {
       });
 
       if (response.ok) {
-        router.push("/");
+        router.push("/?eventCreateSuccess=true");
       } else {
         const errorData = await response.json();
         setErrors({ title: errorData.error });

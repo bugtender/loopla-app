@@ -56,13 +56,13 @@ export default async function EventDetail({
             </Box>
 
             <Grid container spacing={4} sx={{ mb: 4 }}>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
                   📅 Date & Time
                 </Typography>
                 <Typography variant="body1">{dayjs(event.date).format("YYYY-MM-DD HH:mm")}</Typography>
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
                   📍 Location
                 </Typography>
