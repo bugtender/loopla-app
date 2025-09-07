@@ -1,27 +1,63 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { Event } from "./types/events";
+import { Event } from "@/types/events"
+import Link from "next/link";
+import {
+  Container,
+  TextField,
+  Typography,
+  Card,
+  CardContent,
+  Box,
+  Button,
+  CardActionArea,
+  CircularProgress,
+  Alert,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
+  Grid
+} from "@mui/material";
+import dayjs from "dayjs";
 
 export default function Home() {
   const [events, setEvents] = useState<Event[]>([])
   const [filteredEvents , setFilteredEvents] = useState<Event[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const [sortBy, setSortBy] = useState('title');
 
   useEffect(()=> {
     fetchEvents()
   }, [])
+
+  useEffect(()=>{
+    const urlParams = new URLSearchParams(window.location.search);
+    const success = urlParams.get('eventCreateSuccess');
+    if(success==='true'){
+      setSuccessMessage('Event created successfully! 🎉');
+      setTimeout(()=> setSuccessMessage(''), 3000);
+      window.history.replaceState({}, '', '/')
+    }
+  })
 
   useEffect(() =>{
     //  quick filter by lowercase
     const filtered = events.filter((event) => event.title.toLowerCase().includes(searchTerm.toLowerCase()))
     //  events sorted by length of title, shortest first
     filtered.sort((a, b) => {
-      return a.title.length - b.title.length
+      if(sortBy === 'title'){
+        return a.title.length - b.title.length
+      } else {
+        return new Date(a.date).getTime() - new Date(b.date).getTime()
+      }
     })
+  
     setFilteredEvents(filtered)
-  },[events, searchTerm])
+  },[events, searchTerm, sortBy])
 
   const fetchEvents = async () => {
     try{
@@ -39,39 +75,96 @@ export default function Home() {
 
   if(loading){
     return (
-      <div>Loading events....</div>
-    )
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "100vh",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
   }
 
   return (
-    <div >
-      <main >
-        <div>
-          <input
-            type="text"
-            placeholder="Search event by title..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            />
-        </div>
-        <div>
+    <Box sx={{ bgcolor: "grey.50", py: 6, minHeight: "100vh" }}>
+      <Container maxWidth="sm">
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 2,
+          }}
+        >
+          <Typography variant="h4" component="h1" gutterBottom align="center">
+            Upcoming Event
+          </Typography>
+
+          <Link href="/create">
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{ mb: 3 }}
+            >
+              Create New Event
+            </Button>
+          </Link>
+
+          <Grid container spacing={2} sx={{ width: "100%" }}>
+            <Grid size={8} >
+              <TextField
+                fullWidth
+                label="Search event by title..."
+                variant="outlined"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </Grid>
+
+            <Grid size={4}>
+              <FormControl fullWidth>
+                <InputLabel id="sort-by-label">Sort By</InputLabel>
+                <Select
+                  labelId="sort-by-label"
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value as "title" | "date")}
+                  label="Sort By"
+                >
+                  <MenuItem value="title">Title</MenuItem>
+                  <MenuItem value="date">Date</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+          </Grid>
+
+          { successMessage && <Alert severity="success">{successMessage}</Alert> }
+
           {filteredEvents.length === 0 ? (
-            <p>
-              {searchTerm ? 'No events foud match your search' : 'No events'} 
-            </p>
-          ):(
+            <Typography variant="body1" color="text.secondary">
+              {searchTerm ? "No events found matching your search" : "No events"}
+            </Typography>
+          ) : (
             filteredEvents.map((event) => (
-              <div key={event.id}>
-                <h2>{event.title}</h2>
-                <p>{event.date}</p>
-                <p>{event.location}</p>
-              </div>
-            )))
-          } 
-        </div>
-      </main>
-      <footer>
-      </footer>
-    </div>
+             <Card sx={{ width: "100%" }} key={event.id}>
+              <CardActionArea component={Link} href={`/event/${event.id}`}>
+                <CardContent>
+                  <Typography variant="h6">{event.title}</Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    📅 {dayjs(event.date).format("dddd, MMMM D, YYYY h:mm A")}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    📍 {event.location}
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+            ))
+          )}
+        </Box>
+      </Container>
+    </Box>
   );
 }
