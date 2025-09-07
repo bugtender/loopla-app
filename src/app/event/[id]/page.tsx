@@ -60,7 +60,7 @@ export default async function EventDetail({
                 <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
                   📅 Date & Time
                 </Typography>
-                <Typography variant="body1">{dayjs(event.date).format("YYYY-MM-DD HH:mm")}</Typography>
+                <Typography variant="body1">{dayjs(event.date).format("dddd, MMMM D, YYYY h:mm A")}</Typography>
               </Grid>
               <Grid size={12}>
                 <Typography variant="subtitle1" fontWeight="bold" gutterBottom>

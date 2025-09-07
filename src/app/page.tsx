@@ -103,7 +103,7 @@ export default function Home() {
             Upcoming Event
           </Typography>
 
-          <Link href="/new-event">
+          <Link href="/create">
             <Button
               variant="contained"
               color="primary"
@@ -153,10 +153,10 @@ export default function Home() {
                 <CardContent>
                   <Typography variant="h6">{event.title}</Typography>
                   <Typography variant="body2" color="text.secondary">
-                    {dayjs(event.date).format("YYYY-MM-DD HH:mm")}
+                    📅 {dayjs(event.date).format("dddd, MMMM D, YYYY h:mm A")}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    {event.location}
+                    📍 {event.location}
                   </Typography>
                 </CardContent>
               </CardActionArea>
