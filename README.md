@@ -42,6 +42,7 @@
 
 #### Test
 - [ ] Unit tests for API endpoints (`/api/events`).
+    - [x] POST endpoint: Create new event with validation.
 - [ ] Component tests with React Testing Library (validation, search, filter, etc).
 - [ ] CI/CD tools to run lint + tests automatically on PRs.
 
