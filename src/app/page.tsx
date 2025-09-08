@@ -45,9 +45,8 @@ export default function Home() {
   })
 
   useEffect(() =>{
-    //  quick filter by lowercase
     const filtered = events.filter((event) => event.title.toLowerCase().includes(searchTerm.toLowerCase()))
-    //  events sorted by length of title, shortest first
+
     filtered.sort((a, b) => {
       if(sortBy === 'title'){
         return a.title.length - b.title.length

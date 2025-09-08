@@ -48,14 +48,6 @@ export async function POST(request: Request) {
       )
     }
 
-    const emojiRegex = /\p{Extended_Pictographic}(?:\u200D\p{Extended_Pictographic})*/gu;
-    if (!emojiRegex.test(title)){
-      return NextResponse.json(
-        {error: 'Title must contain at least an emoji at the end'},
-        {status: 400 }
-      )
-    }
-
     const events = readEventsFromFile();
     const newEvent: Event = {
       id: Date.now().toString(),
