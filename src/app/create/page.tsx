@@ -32,6 +32,16 @@ export default function CreateEvent() {
   const validateForm = (): boolean => {
     const newErrors: Partial<CreateEventData> = {};
 
+    if (!formData.title.trim()) {
+      newErrors.title = "Title is required";
+    } else {
+      // At least on emoji at the end
+      const emojiRegex = /\p{Extended_Pictographic}(?:\u200D\p{Extended_Pictographic})*$/u;
+      if (!emojiRegex.test(formData.title)) {
+        newErrors.title = "Title must end with an emoji";
+      }
+    }
+    
     if (!formData.date) {
       newErrors.date = "Date is required";
     } else {

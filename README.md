@@ -18,7 +18,7 @@
 ### Create Event Page (/create)
 
 - ✅ A for with these inputs
-    - title
+    - title (must contain at least one emoji at the end)
     - description
     - date
     - location (UPPERCASE)
